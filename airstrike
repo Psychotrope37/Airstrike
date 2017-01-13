@@ -17,7 +17,7 @@ function ctrl_c() {
 ifconfig | grep flags;
 printf "select a wireless interface to use >> ";
 read interface;
-printf "do you want to scan the wireless space for networks? [Y/N]";
+printf "scan the wireless space for networks? [Y/N] ";
 read yesno;
 if [[ $yesno == "Y" ]]; then
 	echo "		    Networks Found:"
