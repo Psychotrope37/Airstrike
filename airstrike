@@ -28,7 +28,7 @@ fi;
 printf "Select a $(tput bold)target$(tput sgr0) to attack >> ";
 read target;
 echo "[ gathering target information ]";
-channel=$(iwlist $interface scan | grep "$target" -B 4 | grep Channel: | tr -dc '0-9');
+channel=$(iwlist $interface scan | grep -m 1 "$target" -B 4 | grep Channel: | tr -dc '0-9');
 airmon-ng start $interface | grep NONEXISTANT;
 #every time I try to use >> /dev/null here I get a grep invalid argument error despite never using grep... must be somethigng with airmon-ng...
 printf "select the the interval for each attack sequence (higher for single node networks, lower for roaming configurations) >> ";
